@@ -216,4 +216,495 @@
     <div class="menu-heading">Menu Utama</div>
     <div class="nav-item active" id="nav-dashboard" onclick="switchPage('dashboard')">○ Dashboard</div>
     <div class="nav-item" id="nav-buat" onclick="switchPage('buat')">+ Buat Naskah</div>
-    <div class="nav-item" id="nav-latihan" onclick="switchPage('latihan')">◉ Mode Lat
+    <div class="nav-item" id="nav-latihan" onclick="switchPage('latihan')">◉ Mode Latihan</div>
+    <div class="nav-item" id="nav-evaluasi" onclick="switchPage('evaluasi')">▤ Evaluasi &amp; Riwayat</div>
+  </aside>
+
+  <!-- KONTEN KANAN -->
+  <main class="content">
+
+    <!-- 1. DASHBOARD -->
+    <section id="page-dashboard" class="page-section active">
+      <div class="hero-banner">
+        <h2>Selamat Datang di Speech Trainer! 👋</h2>
+        <p>Platform latihan berbicara di depan umum berbasis AI. Susun naskah terstruktur, rekam latihan Anda, dan dapatkan evaluasi instan untuk performa terbaik.</p>
+        <div class="hero-actions">
+          <button class="btn-white" onclick="switchPage('buat')">+ Buat Naskah Baru</button>
+          <button class="btn-ghost" onclick="switchPage('latihan')">🎙️ Mulai Latihan</button>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="label">Naskah Tersimpan</div>
+          <div class="value" id="stat-naskah">0</div>
+        </div>
+        <div class="stat-box">
+          <div class="label">Total Sesi Latihan</div>
+          <div class="value" id="stat-latihan">0</div>
+        </div>
+        <div class="stat-box">
+          <div class="label">Rata-rata Skor AI</div>
+          <div class="value" id="stat-skor">-</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📌 Alur Penggunaan Aplikasi</div>
+        <ol style="margin:0; padding-left:20px; line-height:1.8; color:var(--text-muted); font-size:14px;">
+          <li>Buka menu <strong>Buat Naskah</strong> untuk menyusun materi pidato otomatis dengan AI atau menulis manual, lalu simpan.</li>
+          <li>Masuk ke menu <strong>Mode Latihan</strong>, pilih naskah, lalu tekan <strong>Mulai Bicara</strong> untuk merekam suara Anda.</li>
+          <li>Tekan <strong>Kirim untuk Evaluasi AI</strong> guna mendapatkan skor kelancaran, artikulasi, dan saran perbaikan.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- 2. BUAT NASKAH -->
+    <section id="page-buat" class="page-section">
+      <h1 class="page-title">Buat &amp; Kelola Naskah</h1>
+      <p class="page-subtitle">Susun naskah pidato dengan bantuan AI atau ketik naskah mandiri untuk bahan latihan.</p>
+
+      <div class="card">
+        <div class="mode-tabs">
+          <button class="tab-pill active" id="tab-ai" onclick="switchScriptMode('ai')">✨ Buat Otomatis (AI)</button>
+          <button class="tab-pill" id="tab-manual" onclick="switchScriptMode('manual')">✍️ Tulis / Tempel Manual</button>
+        </div>
+
+        <div id="form-ai">
+          <div class="grid-2">
+            <div class="form-group">
+              <label>Topik Utama Pidato / Presentasi</label>
+              <input type="text" id="ai-topik" placeholder="Contoh: Pentingnya Literasi Digital bagi Pelajar SMA">
+            </div>
+            <div class="form-group">
+              <label>Target Audiens</label>
+              <input type="text" id="ai-audiens" placeholder="Contoh: Siswa SMA dan Guru">
+            </div>
+          </div>
+          <div class="grid-2">
+            <div class="form-group">
+              <label>Gaya Penyampaian</label>
+              <select id="ai-gaya">
+                <option value="Inspiratif & Persuasif">Inspiratif &amp; Persuasif</option>
+                <option value="Formal & Akademis">Formal &amp; Akademis</option>
+                <option value="Santai & Komunikatif">Santai &amp; Komunikatif</option>
+                <option value="Tegas & Motivatif">Tegas &amp; Motivatif</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Target Durasi (Menit)</label>
+              <input type="number" id="ai-durasi" value="3" min="1" max="15">
+            </div>
+          </div>
+          <button class="btn-primary" id="btn-generate" onclick="generateNaskahAI()">✨ Buat Naskah dengan AI</button>
+        </div>
+
+        <hr style="border:none; border-top:1px solid var(--border); margin:22px 0;">
+
+        <div class="form-group">
+          <label>Judul Naskah</label>
+          <input type="text" id="naskah-judul" placeholder="Masukkan judul naskah...">
+        </div>
+        <div class="form-group">
+          <label>Isi Naskah Pidato</label>
+          <textarea id="naskah-isi" rows="9" placeholder="Naskah hasil AI akan muncul di sini, atau ketik/tempel naskah Anda secara langsung..."></textarea>
+        </div>
+        <button class="btn-success" id="btn-simpan-naskah" onclick="simpanNaskah()">💾 Simpan Naskah ke Daftar</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📚 Daftar Naskah Tersimpan</div>
+        <div id="list-naskah">Memuat data...</div>
+      </div>
+    </section>
+
+    <!-- 3. MODE LATIHAN -->
+    <section id="page-latihan" class="page-section">
+      <h1 class="page-title">Mode Latihan &amp; Rekaman</h1>
+      <p class="page-subtitle">Baca naskah di bawah ini sambil merekam suara Anda, lalu kirim ke AI untuk dinilai.</p>
+
+      <div class="card">
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Nama Siswa / Pembicara</label>
+            <input type="text" id="latihan-nama" placeholder="Contoh: Budi Santoso - XI IPA 2">
+          </div>
+          <div class="form-group">
+            <label>Pilih Naskah Latihan</label>
+            <select id="latihan-pilih-naskah" onchange="tampilkanNaskahLatihan()">
+              <option value="">-- Pilih Naskah --</option>
+            </select>
+          </div>
+        </div>
+
+        <label>Teks Naskah (Teleprompter)</label>
+        <div class="script-viewer" id="viewer-naskah">Silakan pilih naskah terlebih dahulu pada menu di atas...</div>
+
+        <div id="mic-warning" class="alert-warning hidden"></div>
+
+        <div class="recorder-box">
+          <div class="timer-display" id="timer">00:00</div>
+          <div class="rec-status" id="rec-status">Siap merekam suara</div>
+
+          <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+            <button class="btn-primary" id="btn-rec-start" onclick="mulaiRekam()">🎙️ Mulai Bicara</button>
+            <button class="btn-danger-sm" id="btn-rec-stop" onclick="stopRekam()" style="padding:11px 20px; font-size:14px;" disabled>⏹️ Selesai &amp; Stop</button>
+          </div>
+
+          <div id="audio-preview-area" class="hidden" style="margin-top:20px;">
+            <audio id="audio-player" controls style="width:100%; max-width:420px; margin-bottom:14px;"></audio><br>
+            <button class="btn-success" id="btn-kirim-evaluasi" onclick="kirimEvaluasi()">🚀 Kirim untuk Evaluasi AI</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. EVALUASI & RIWAYAT -->
+    <section id="page-evaluasi" class="page-section">
+      <h1 class="page-title">Evaluasi &amp; Riwayat Latihan</h1>
+      <p class="page-subtitle">Hasil analisis AI dan rekaman riwayat performa latihan berbicara.</p>
+
+      <div class="card hidden" id="hasil-evaluasi-terbaru">
+        <div class="card-title">🏆 Hasil Evaluasi Terbaru</div>
+        <div style="display:flex; gap:24px; align-items:center; flex-wrap:wrap;">
+          <div class="score-circle" id="eval-skor-besar">0</div>
+          <div style="flex:1; min-width:250px;">
+            <div style="font-weight:700; font-size:16px; margin-bottom:6px;" id="eval-judul-hasil">-</div>
+            <p style="margin:0; font-size:14px; line-height:1.6; color:var(--text-dark); white-space:pre-wrap;" id="eval-catatan-hasil">-</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📋 Riwayat Sesi Latihan</div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Waktu</th>
+                <th>Nama Pembicara</th>
+                <th>Judul Naskah</th>
+                <th>Durasi</th>
+                <th>Skor</th>
+                <th>Catatan AI</th>
+              </tr>
+            </thead>
+            <tbody id="tabel-riwayat">
+              <tr><td colspan="6">Memuat riwayat...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxcTxlPF7-zkbw4nfBhnLiw_uPa2JxBjAHL_2ticMz7sm3rLyL67VsRd1GLtBWNFbc/exec";
+
+    let daftarNaskah = [];
+    let daftarRiwayat = [];
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let audioBase64 = "";
+    let audioMimeType = "audio/webm";
+    let timerInterval = null;
+    let detikRekam = 0;
+
+    async function callBackend(action, payload = {}) {
+      const response = await fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ action: action, ...payload })
+      });
+      if (!response.ok) throw new Error("Gagal terhubung ke server (" + response.status + ")");
+      return await response.json();
+    }
+
+    function switchPage(pageId) {
+      document.querySelectorAll(".page-section").forEach(el => el.classList.remove("active"));
+      document.querySelectorAll(".nav-item").forEach(el => el.classList.remove("active"));
+      document.getElementById("page-" + pageId).classList.add("active");
+      document.getElementById("nav-" + pageId).classList.add("active");
+    }
+
+    function switchScriptMode(mode) {
+      document.getElementById("tab-ai").classList.toggle("active", mode === "ai");
+      document.getElementById("tab-manual").classList.toggle("active", mode === "manual");
+      document.getElementById("form-ai").classList.toggle("hidden", mode !== "ai");
+    }
+
+    async function muatSemuaData() {
+      try {
+        const res = await callBackend("getInitialData");
+        if (res.status === "success") {
+          daftarNaskah = res.naskah || [];
+          daftarRiwayat = res.riwayat || [];
+          renderNaskah();
+          renderRiwayat();
+          updateStatistik();
+        }
+      } catch (err) {
+        document.getElementById("list-naskah").innerHTML = "<span style='color:red;'>Gagal memuat data: " + err.message + "</span>";
+      }
+    }
+
+    function updateStatistik() {
+      document.getElementById("stat-naskah").textContent = daftarNaskah.length;
+      document.getElementById("stat-latihan").textContent = daftarRiwayat.length;
+      if (daftarRiwayat.length > 0) {
+        const total = daftarRiwayat.reduce((acc, item) => acc + (Number(item.skor) || 0), 0);
+        document.getElementById("stat-skor").textContent = Math.round(total / daftarRiwayat.length);
+      }
+    }
+
+    async function generateNaskahAI() {
+      const topik = document.getElementById("ai-topik").value.trim();
+      const audiens = document.getElementById("ai-audiens").value.trim() || "Umum";
+      const gaya = document.getElementById("ai-gaya").value;
+      const durasi = document.getElementById("ai-durasi").value || "3";
+
+      if (!topik) return alert("Silakan isi topik pidato terlebih dahulu.");
+
+      const btn = document.getElementById("btn-generate");
+      btn.disabled = true;
+      btn.textContent = "⏳ Sedang menyusun naskah...";
+
+      try {
+        const res = await callBackend("generateScript", { topik, audiens, gaya, durasi });
+        if (res.status === "success") {
+          document.getElementById("naskah-judul").value = res.judul || topik;
+          document.getElementById("naskah-isi").value = res.naskah;
+        } else {
+          alert("Gagal membuat naskah: " + res.message);
+        }
+      } catch (err) {
+        alert("Terjadi kesalahan: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "✨ Buat Naskah dengan AI";
+      }
+    }
+
+    async function simpanNaskah() {
+      const judul = document.getElementById("naskah-judul").value.trim();
+      const isi = document.getElementById("naskah-isi").value.trim();
+      if (!judul || !isi) return alert("Judul dan isi naskah tidak boleh kosong.");
+
+      const btn = document.getElementById("btn-simpan-naskah");
+      btn.disabled = true;
+      btn.textContent = "⏳ Menyimpan...";
+
+      try {
+        const res = await callBackend("saveScript", { judul, isi });
+        if (res.status === "success") {
+          alert("Naskah berhasil disimpan!");
+          document.getElementById("naskah-judul").value = "";
+          document.getElementById("naskah-isi").value = "";
+          await muatSemuaData();
+        } else {
+          alert("Gagal menyimpan: " + res.message);
+        }
+      } catch (err) {
+        alert("Error: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "💾 Simpan Naskah ke Daftar";
+      }
+    }
+
+    function renderNaskah() {
+      const container = document.getElementById("list-naskah");
+      const dropdown = document.getElementById("latihan-pilih-naskah");
+      dropdown.innerHTML = '<option value="">-- Pilih Naskah --</option>';
+
+      if (daftarNaskah.length === 0) {
+        container.innerHTML = "<p style='color:var(--text-muted); font-size:14px;'>Belum ada naskah tersimpan.</p>";
+        return;
+      }
+
+      container.innerHTML = "";
+      daftarNaskah.forEach((item, idx) => {
+        const opt = document.createElement("option");
+        opt.value = idx;
+        opt.textContent = item.judul;
+        dropdown.appendChild(opt);
+
+        const div = document.createElement("div");
+        div.className = "saved-item";
+        div.innerHTML = `
+          <div>
+            <div class="saved-item-title">${item.judul}</div>
+            <div class="saved-item-meta">${item.isi.substring(0, 95)}...</div>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button class="btn-primary" style="padding:7px 12px; font-size:12px;" onclick="pilihUntukLatihan(${idx})">Latih</button>
+            <button class="btn-danger-sm" onclick="hapusNaskah('${item.id}')">Hapus</button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function pilihUntukLatihan(idx) {
+      switchPage("latihan");
+      document.getElementById("latihan-pilih-naskah").value = idx;
+      tampilkanNaskahLatihan();
+    }
+
+    function tampilkanNaskahLatihan() {
+      const idx = document.getElementById("latihan-pilih-naskah").value;
+      const viewer = document.getElementById("viewer-naskah");
+      if (idx === "") {
+        viewer.textContent = "Silakan pilih naskah terlebih dahulu pada menu di atas...";
+        return;
+      }
+      viewer.textContent = daftarNaskah[idx].isi;
+    }
+
+    async function hapusNaskah(id) {
+      if (!confirm("Hapus naskah ini?")) return;
+      try {
+        await callBackend("deleteScript", { id });
+        await muatSemuaData();
+      } catch (err) {
+        alert("Gagal menghapus: " + err.message);
+      }
+    }
+
+    async function mulaiRekam() {
+      const warn = document.getElementById("mic-warning");
+      warn.classList.add("hidden");
+
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        warn.textContent = "Browser ini tidak mendukung perekaman audio. Gunakan Chrome atau Safari versi terbaru.";
+        warn.classList.remove("hidden");
+        return;
+      }
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        audioChunks = [];
+        mediaRecorder = new MediaRecorder(stream);
+        audioMimeType = mediaRecorder.mimeType || "audio/webm";
+
+        mediaRecorder.ondataavailable = e => {
+          if (e.data.size > 0) audioChunks.push(e.data);
+        };
+
+        mediaRecorder.onstop = () => {
+          const blob = new Blob(audioChunks, { type: audioMimeType });
+          const url = URL.createObjectURL(blob);
+          const player = document.getElementById("audio-player");
+          player.src = url;
+          document.getElementById("audio-preview-area").classList.remove("hidden");
+
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            audioBase64 = reader.result.split(",")[1];
+          };
+          reader.readAsDataURL(blob);
+          stream.getTracks().forEach(t => t.stop());
+        };
+
+        mediaRecorder.start();
+        detikRekam = 0;
+        updateTimerText();
+        timerInterval = setInterval(() => {
+          detikRekam++;
+          updateTimerText();
+        }, 1000);
+
+        document.getElementById("rec-status").textContent = "🔴 Sedang merekam suara...";
+        document.getElementById("rec-status").className = "rec-status recording";
+        document.getElementById("btn-rec-start").disabled = true;
+        document.getElementById("btn-rec-stop").disabled = false;
+        document.getElementById("audio-preview-area").classList.add("hidden");
+      } catch (err) {
+        warn.textContent = "Izin mikrofon ditolak atau tidak tersedia (" + err.message + "). Pastikan izin mikrofon diaktifkan pada pengaturan browser.";
+        warn.classList.remove("hidden");
+      }
+    }
+
+    function stopRekam() {
+      if (mediaRecorder && mediaRecorder.state !== "inactive") {
+        mediaRecorder.stop();
+      }
+      clearInterval(timerInterval);
+      document.getElementById("rec-status").textContent = "✅ Rekaman selesai! Putar ulang atau kirim untuk evaluasi.";
+      document.getElementById("rec-status").className = "rec-status ready";
+      document.getElementById("btn-rec-start").disabled = false;
+      document.getElementById("btn-rec-stop").disabled = true;
+    }
+
+    function updateTimerText() {
+      const m = String(Math.floor(detikRekam / 60)).padStart(2, "0");
+      const s = String(detikRekam % 60).padStart(2, "0");
+      document.getElementById("timer").textContent = `${m}:${s}`;
+    }
+
+    async function kirimEvaluasi() {
+      const nama = document.getElementById("latihan-nama").value.trim() || "Peserta Latihan";
+      const idx = document.getElementById("latihan-pilih-naskah").value;
+      const judul = idx !== "" ? daftarNaskah[idx].judul : "Latihan Bebas";
+      const naskahAsli = idx !== "" ? daftarNaskah[idx].isi : "";
+
+      if (!audioBase64) return alert("Rekaman audio belum siap. Silakan rekam ulang.");
+
+      const btn = document.getElementById("btn-kirim-evaluasi");
+      btn.disabled = true;
+      btn.textContent = "⏳ AI sedang menganalisis suara...";
+
+      try {
+        const res = await callBackend("evaluateSpeech", {
+          nama,
+          judul,
+          naskah: naskahAsli,
+          durasi: document.getElementById("timer").textContent,
+          audioBase64,
+          mimeType: audioMimeType
+        });
+
+        if (res.status === "success") {
+          document.getElementById("eval-skor-besar").textContent = res.skor;
+          document.getElementById("eval-judul-hasil").textContent = `${nama} — ${judul}`;
+          document.getElementById("eval-catatan-hasil").textContent = res.catatan;
+          document.getElementById("hasil-evaluasi-terbaru").classList.remove("hidden");
+          switchPage("evaluasi");
+          await muatSemuaData();
+        } else {
+          alert("Gagal mengevaluasi: " + res.message);
+        }
+      } catch (err) {
+        alert("Terjadi kesalahan saat mengirim evaluasi: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "🚀 Kirim untuk Evaluasi AI";
+      }
+    }
+
+    function renderRiwayat() {
+      const tbody = document.getElementById("tabel-riwayat");
+      if (daftarRiwayat.length === 0) {
+        tbody.innerHTML = "<tr><td colspan='6'>Belum ada riwayat latihan.</td></tr>";
+        return;
+      }
+      tbody.innerHTML = "";
+      daftarRiwayat.forEach(item => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${item.waktu || "-"}</td>
+          <td><strong>${item.nama || "-"}</strong></td>
+          <td>${item.judul || "-"}</td>
+          <td>${item.durasi || "-"}</td>
+          <td><strong>${item.skor || 0}</strong></td>
+          <td>${item.catatan || "-"}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    window.addEventListener("DOMContentLoaded", muatSemuaData);
+  </script>
+</body>
+</html>
