@@ -3,303 +3,220 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Speech Trainer</title>
+  <title>Speech Trainer - Pelatih Public Speaking AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #6366f1;
-      --primary-hover: #4f46e5;
-      --primary-soft: #eef2ff;
-      --bg-main: #f5f6fa;
-      --sidebar-bg: #ffffff;
-      --card-bg: #ffffff;
-      --text-dark: #1f2937;
-      --text-muted: #6b7280;
-      --border: #e5e7eb;
-      --danger: #ef4444;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
       --success: #10b981;
+      --danger: #ef4444;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
     }
 
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background-color: var(--bg-main);
-      color: var(--text-dark);
-      display: flex;
-      min-height: 100vh;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background: var(--bg); color: var(--text); display: flex; min-height: 100vh; }
 
-    /* SIDEBAR KIRI */
+    /* Sidebar */
     .sidebar {
-      width: 240px;
-      background: var(--sidebar-bg);
-      border-right: 1px solid var(--border);
-      padding: 24px 14px;
-      display: flex;
-      flex-direction: column;
-      flex-shrink: 0;
+      width: 250px; background: var(--card); border-right: 1px solid var(--border);
+      padding: 24px 16px; display: flex; flex-direction: column; gap: 8px;
     }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 0 10px 22px 10px;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 20px;
+    .brand { display: flex; align-items: center; gap: 10px; font-size: 1.25rem; font-weight: 700; color: var(--primary); margin-bottom: 24px; padding: 0 12px; }
+    .nav-label { font-size: 0.75rem; font-weight: 700; color: var(--muted); padding: 0 12px; margin-bottom: 4px; letter-spacing: 0.05em; }
+    .nav-btn {
+      display: flex; align-items: center; gap: 10px; padding: 12px; border: none; background: transparent;
+      border-radius: 10px; font-size: 0.95rem; font-weight: 600; color: var(--muted); cursor: pointer; text-align: left; transition: 0.2s;
     }
-    .brand-icon {
-      width: 36px;
-      height: 36px;
-      background: var(--primary);
-      color: #fff;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-    }
-    .brand-title { font-weight: 700; font-size: 17px; color: var(--text-dark); }
-    .menu-heading {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      color: #9ca3af;
-      padding: 0 12px;
-      margin-bottom: 10px;
-      text-transform: uppercase;
-    }
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 11px 14px;
-      border-radius: 10px;
-      color: var(--text-muted);
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      margin-bottom: 4px;
-      transition: all 0.15s ease;
-    }
-    .nav-item:hover { background: #f9fafb; color: var(--text-dark); }
-    .nav-item.active { background: var(--primary-soft); color: var(--primary); font-weight: 600; }
+    .nav-btn:hover { background: #f1f5f9; color: var(--text); }
+    .nav-btn.active { background: #eef2ff; color: var(--primary); }
 
-    /* KONTEN UTAMA */
-    .content { flex: 1; padding: 28px 36px; overflow-y: auto; max-width: 1100px; }
-    .page-section { display: none; }
-    .page-section.active { display: block; animation: fadeIn 0.25s ease; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    /* Main Content */
+    .main { flex: 1; padding: 32px; max-width: 1000px; margin: 0 auto; width: 100%; }
+    .page { display: none; }
+    .page.active { display: block; animation: fadeIn 0.25s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
-    h1.page-title { font-size: 24px; margin: 0 0 6px 0; color: var(--text-dark); }
-    p.page-subtitle { margin: 0 0 22px 0; color: var(--text-muted); font-size: 14px; }
+    h1 { font-size: 1.65rem; font-weight: 700; margin-bottom: 6px; }
+    .subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 24px; }
 
     .card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 24px;
-      margin-bottom: 22px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
-    }
-    .card-title { font-size: 16px; font-weight: 700; margin: 0 0 16px 0; color: var(--text-dark); }
-
-    /* BANNER DASHBOARD */
-    .hero-banner {
-      background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
-      color: white;
-      border-radius: 16px;
-      padding: 28px 32px;
-      margin-bottom: 26px;
-    }
-    .hero-banner h2 { margin: 0 0 8px 0; font-size: 24px; }
-    .hero-banner p { margin: 0 0 20px 0; font-size: 14px; opacity: 0.92; max-width: 600px; line-height: 1.5; }
-    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
-    .btn-white {
-      background: #ffffff; color: var(--primary); border: none; padding: 10px 18px;
-      border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer;
-    }
-    .btn-ghost {
-      background: rgba(255,255,255,0.18); color: #ffffff; border: 1px solid rgba(255,255,255,0.45);
-      padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer;
+      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 24px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.03);
     }
 
-    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 24px; }
-    .stat-box { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
-    .stat-box .label { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
-    .stat-box .value { font-size: 28px; font-weight: 700; color: var(--text-dark); }
+    /* Tabs */
+    .tab-group { display: flex; gap: 10px; margin-bottom: 20px; }
+    .tab-btn {
+      flex: 1; padding: 12px; border-radius: 10px; border: 1px solid var(--border);
+      background: #f8fafc; font-weight: 600; cursor: pointer; transition: 0.2s;
+    }
+    .tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-    /* FORM & INPUTS */
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    /* Form Elements */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
     .form-group { margin-bottom: 16px; }
-    label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; }
-    input[type="text"], input[type="number"], select, textarea {
-      width: 100%; padding: 11px 13px; border: 1px solid #d1d5db; border-radius: 9px;
-      font-size: 14px; font-family: inherit; background: #fff; color: var(--text-dark);
+    label { display: block; font-size: 0.88rem; font-weight: 600; margin-bottom: 6px; }
+    input, select, textarea {
+      width: 100%; padding: 11px 14px; border: 1px solid var(--border); border-radius: 10px;
+      font-size: 0.95rem; outline: none; transition: 0.2s; background: #fff;
     }
-    input:focus, select:focus, textarea:focus {
-      outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
-    }
+    input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79,70,229,0.1); }
+    textarea { min-height: 220px; line-height: 1.6; resize: vertical; }
 
-    .btn-primary {
-      background: var(--primary); color: #fff; border: none; padding: 11px 20px; border-radius: 9px;
-      font-size: 14px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 12px 20px; border-radius: 10px; border: none; font-size: 0.95rem;
+      font-weight: 600; cursor: pointer; transition: 0.2s;
     }
-    .btn-primary:hover { background: var(--primary-hover); }
-    .btn-primary:disabled { background: #a5b4fc; cursor: not-allowed; }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover:not(:disabled) { background: var(--primary-hover); }
+    .btn-success { background: var(--success); color: white; }
+    .btn-danger { background: var(--danger); color: white; }
+    .btn-outline { background: white; border: 1px solid var(--border); color: var(--text); }
+    .btn-outline:hover { background: #f8fafc; }
 
-    .btn-success {
-      background: var(--success); color: #fff; border: none; padding: 11px 20px; border-radius: 9px;
-      font-size: 14px; font-weight: 600; cursor: pointer;
-    }
-    .btn-danger-sm {
-      background: #fee2e2; color: #b91c1c; border: none; padding: 6px 12px; border-radius: 6px;
-      font-size: 12px; font-weight: 600; cursor: pointer;
-    }
+    /* Stats */
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+    .stat-card { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
+    .stat-label { font-size: 0.85rem; color: var(--muted); font-weight: 600; }
+    .stat-val { font-size: 1.8rem; font-weight: 700; color: var(--primary); margin-top: 6px; }
 
-    .mode-tabs { display: flex; gap: 8px; margin-bottom: 18px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
-    .tab-pill {
-      padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;
-      border: 1px solid var(--border); background: #f9fafb; color: var(--text-muted);
-    }
-    .tab-pill.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-
-    .saved-item {
-      border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 10px;
-      display: flex; justify-content: space-between; align-items: center; gap: 12px; background: #fafafa;
-    }
-    .saved-item-title { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
-    .saved-item-meta { font-size: 12px; color: var(--text-muted); }
-
-    /* AREA LATIHAN */
-    .script-viewer {
-      background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 18px;
-      font-size: 15px; line-height: 1.7; white-space: pre-wrap; max-height: 240px; overflow-y: auto; margin-bottom: 18px;
-    }
+    /* Recorder Box */
     .recorder-box {
-      text-align: center; padding: 24px; border: 1px solid var(--border); border-radius: 12px;
-      background: #fcfcfd; margin-bottom: 20px;
+      text-align: center; padding: 28px 20px; border: 2px dashed var(--border);
+      border-radius: 16px; background: #fafbff;
     }
-    .timer-display { font-size: 44px; font-weight: 800; font-variant-numeric: tabular-nums; color: var(--text-dark); margin-bottom: 4px; }
-    .rec-status { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
-    .rec-status.recording { color: var(--danger); font-weight: 600; }
-    .rec-status.ready { color: var(--success); font-weight: 600; }
-    .alert-warning { background: #fef3c7; color: #92400e; padding: 12px 16px; border-radius: 8px; font-size: 13px; margin-bottom: 16px; }
-
-    /* EVALUASI & RIWAYAT */
-    .score-circle {
-      width: 100px; height: 100px; border-radius: 50%; background: var(--primary-soft); color: var(--primary);
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      font-weight: 800; font-size: 30px; border: 4px solid var(--primary);
+    .timer { font-size: 2.6rem; font-weight: 700; font-variant-numeric: tabular-nums; margin-bottom: 10px; }
+    .meter-wrap {
+      width: 240px; height: 10px; background: #e2e8f0; border-radius: 99px;
+      margin: 0 auto 14px; overflow: hidden; display: none;
     }
-    table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    th, td { text-align: left; padding: 12px; border-bottom: 1px solid var(--border); }
-    th { color: var(--text-muted); font-weight: 600; background: #f9fafb; }
+    .meter-bar { height: 100%; width: 0%; background: var(--success); transition: width 0.08s linear; }
+    .rec-status { font-size: 0.9rem; font-weight: 600; color: var(--muted); margin-bottom: 18px; }
+    .rec-controls { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    audio { width: 100%; max-width: 440px; margin: 18px auto 0; display: block; }
 
-    .hidden { display: none !important; }
+    /* Teleprompter */
+    .script-reader {
+      background: #f8fafc; border: 1px solid var(--border); border-radius: 12px;
+      padding: 20px; max-height: 280px; overflow-y: auto; line-height: 1.8;
+      font-size: 1.05rem; white-space: pre-wrap; margin-bottom: 20px;
+    }
+
+    /* List Items */
+    .list-item {
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+      padding: 16px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px; background: #fff;
+    }
+    .badge {
+      display: inline-block; padding: 4px 10px; border-radius: 99px; font-size: 0.8rem;
+      font-weight: 700; background: #eef2ff; color: var(--primary);
+    }
+
+    /* Responsive Mobile */
     @media (max-width: 768px) {
       body { flex-direction: column; }
-      .sidebar { width: 100%; flex-direction: row; overflow-x: auto; padding: 10px; }
-      .brand, .menu-heading { display: none; }
-      .grid-2, .stats-row { grid-template-columns: 1fr; }
-      .content { padding: 18px 16px; }
+      .sidebar {
+        width: 100%; flex-direction: row; overflow-x: auto; padding: 12px;
+        border-right: none; border-bottom: 1px solid var(--border); align-items: center;
+      }
+      .brand { margin-bottom: 0; font-size: 1.05rem; white-space: nowrap; }
+      .nav-label { display: none; }
+      .nav-btn { white-space: nowrap; padding: 8px 12px; font-size: 0.85rem; }
+      .main { padding: 18px; }
+      .grid-2, .stats-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-  <!-- SIDEBAR KIRI -->
+  <!-- SIDEBAR NAVIGASI -->
   <aside class="sidebar">
-    <div class="brand">
-      <div class="brand-icon">🎙️</div>
-      <div class="brand-title">Speech Trainer</div>
-    </div>
-    <div class="menu-heading">Menu Utama</div>
-    <div class="nav-item active" id="nav-dashboard" onclick="switchPage('dashboard')">○ Dashboard</div>
-    <div class="nav-item" id="nav-buat" onclick="switchPage('buat')">+ Buat Naskah</div>
-    <div class="nav-item" id="nav-latihan" onclick="switchPage('latihan')">◉ Mode Latihan</div>
-    <div class="nav-item" id="nav-evaluasi" onclick="switchPage('evaluasi')">▤ Evaluasi &amp; Riwayat</div>
+    <div class="brand">🎙️ Speech Trainer</div>
+    <div class="nav-label">MENU UTAMA</div>
+    <button class="nav-btn active" onclick="showPage('dashboard', this)">📊 Dashboard</button>
+    <button class="nav-btn" onclick="showPage('buat-naskah', this)">➕ Buat Naskah</button>
+    <button class="nav-btn" onclick="showPage('latihan', this)">🎯 Mode Latihan</button>
+    <button class="nav-btn" onclick="showPage('riwayat', this)">📋 Evaluasi & Riwayat</button>
   </aside>
 
-  <!-- KONTEN KANAN -->
-  <main class="content">
+  <!-- KONTEN UTAMA -->
+  <main class="main">
 
     <!-- 1. DASHBOARD -->
-    <section id="page-dashboard" class="page-section active">
-      <div class="hero-banner">
-        <h2>Selamat Datang di Speech Trainer! 👋</h2>
-        <p>Platform latihan berbicara di depan umum berbasis AI. Susun naskah terstruktur, rekam latihan Anda, dan dapatkan evaluasi instan untuk performa terbaik.</p>
-        <div class="hero-actions">
-          <button class="btn-white" onclick="switchPage('buat')">+ Buat Naskah Baru</button>
-          <button class="btn-ghost" onclick="switchPage('latihan')">🎙️ Mulai Latihan</button>
-        </div>
-      </div>
+    <section id="page-dashboard" class="page active">
+      <h1>Dashboard Latihan</h1>
+      <p class="subtitle">Pantau perkembangan kemampuan berbicara dan koleksi naskah pidato Anda.</p>
 
-      <div class="stats-row">
-        <div class="stat-box">
-          <div class="label">Naskah Tersimpan</div>
-          <div class="value" id="stat-naskah">0</div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Naskah Tersimpan</div>
+          <div class="stat-val" id="stat-naskah">0</div>
         </div>
-        <div class="stat-box">
-          <div class="label">Total Sesi Latihan</div>
-          <div class="value" id="stat-latihan">0</div>
+        <div class="stat-card">
+          <div class="stat-label">Total Sesi Latihan</div>
+          <div class="stat-val" id="stat-latihan">0</div>
         </div>
-        <div class="stat-box">
-          <div class="label">Rata-rata Skor AI</div>
-          <div class="value" id="stat-skor">-</div>
+        <div class="stat-card">
+          <div class="stat-label">Rata-Rata Skor AI</div>
+          <div class="stat-val" id="stat-skor">-</div>
         </div>
       </div>
 
       <div class="card">
-        <div class="card-title">📌 Alur Penggunaan Aplikasi</div>
-        <ol style="margin:0; padding-left:20px; line-height:1.8; color:var(--text-muted); font-size:14px;">
-          <li>Buka menu <strong>Buat Naskah</strong> untuk menyusun materi pidato otomatis dengan AI atau menulis manual, lalu simpan.</li>
-          <li>Masuk ke menu <strong>Mode Latihan</strong>, pilih naskah, lalu tekan <strong>Mulai Bicara</strong> untuk merekam suara Anda.</li>
-          <li>Tekan <strong>Kirim untuk Evaluasi AI</strong> guna mendapatkan skor kelancaran, artikulasi, dan saran perbaikan.</li>
-        </ol>
+        <h3 style="margin-bottom: 14px;">📚 Daftar Naskah Tersimpan</h3>
+        <div id="list-naskah">Memuat data...</div>
       </div>
     </section>
 
     <!-- 2. BUAT NASKAH -->
-    <section id="page-buat" class="page-section">
-      <h1 class="page-title">Buat &amp; Kelola Naskah</h1>
-      <p class="page-subtitle">Susun naskah pidato dengan bantuan AI atau ketik naskah mandiri untuk bahan latihan.</p>
+    <section id="page-buat-naskah" class="page">
+      <h1>Buat & Kelola Naskah</h1>
+      <p class="subtitle">Susun naskah pidato dengan bantuan AI atau ketik naskah mandiri untuk bahan latihan.</p>
 
       <div class="card">
-        <div class="mode-tabs">
-          <button class="tab-pill active" id="tab-ai" onclick="switchScriptMode('ai')">✨ Buat Otomatis (AI)</button>
-          <button class="tab-pill" id="tab-manual" onclick="switchScriptMode('manual')">✍️ Tulis / Tempel Manual</button>
+        <div class="tab-group">
+          <button class="tab-btn active" id="tab-ai" onclick="switchScriptMode('ai')">✨ Buat Otomatis (AI)</button>
+          <button class="tab-btn" id="tab-manual" onclick="switchScriptMode('manual')">✍️ Tulis / Tempel Manual</button>
         </div>
 
-        <div id="form-ai">
+        <div id="ai-generator-box">
           <div class="grid-2">
             <div class="form-group">
               <label>Topik Utama Pidato / Presentasi</label>
-              <input type="text" id="ai-topik" placeholder="Contoh: Pentingnya Literasi Digital bagi Pelajar SMA">
+              <input type="text" id="ai-topik" placeholder="Contoh: Pentingnya Literasi Digital">
             </div>
             <div class="form-group">
               <label>Target Audiens</label>
-              <input type="text" id="ai-audiens" placeholder="Contoh: Siswa SMA dan Guru">
+              <input type="text" id="ai-audiens" value="Pelajar SMA">
             </div>
           </div>
           <div class="grid-2">
             <div class="form-group">
               <label>Gaya Penyampaian</label>
               <select id="ai-gaya">
-                <option value="Inspiratif & Persuasif">Inspiratif &amp; Persuasif</option>
-                <option value="Formal & Akademis">Formal &amp; Akademis</option>
-                <option value="Santai & Komunikatif">Santai &amp; Komunikatif</option>
-                <option value="Tegas & Motivatif">Tegas &amp; Motivatif</option>
+                <option value="Inspiratif & Persuasif">Inspiratif & Persuasif</option>
+                <option value="Formal & Akademis">Formal & Akademis</option>
+                <option value="Santai & Komunikatif">Santai & Komunikatif</option>
+                <option value="Tegas & Memotivasi">Tegas & Memotivasi</option>
               </select>
             </div>
             <div class="form-group">
               <label>Target Durasi (Menit)</label>
-              <input type="number" id="ai-durasi" value="3" min="1" max="15">
+              <input type="number" id="ai-durasi" value="2" min="1" max="10">
             </div>
           </div>
-          <button class="btn-primary" id="btn-generate" onclick="generateNaskahAI()">✨ Buat Naskah dengan AI</button>
+          <button class="btn btn-primary" id="btn-generate" onclick="generateScriptAI()">✨ Buat Naskah dengan AI</button>
         </div>
 
-        <hr style="border:none; border-top:1px solid var(--border); margin:22px 0;">
+        <hr style="border: none; border-top: 1px solid var(--border); margin: 22px 0;">
 
         <div class="form-group">
           <label>Judul Naskah</label>
@@ -307,201 +224,245 @@
         </div>
         <div class="form-group">
           <label>Isi Naskah Pidato</label>
-          <textarea id="naskah-isi" rows="9" placeholder="Naskah hasil AI akan muncul di sini, atau ketik/tempel naskah Anda secara langsung..."></textarea>
+          <textarea id="naskah-isi" placeholder="Naskah hasil AI akan muncul di sini, atau ketik/tempel naskah Anda secara langsung..."></textarea>
         </div>
-        <button class="btn-success" id="btn-simpan-naskah" onclick="simpanNaskah()">💾 Simpan Naskah ke Daftar</button>
-      </div>
-
-      <div class="card">
-        <div class="card-title">📚 Daftar Naskah Tersimpan</div>
-        <div id="list-naskah">Memuat data...</div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <button class="btn btn-success" id="btn-save-script" onclick="saveScript()">💾 Simpan Naskah</button>
+          <button class="btn btn-outline" onclick="useCurrentScriptForPractice()">🎯 Langsung Latihan dengan Naskah Ini</button>
+        </div>
       </div>
     </section>
 
     <!-- 3. MODE LATIHAN -->
-    <section id="page-latihan" class="page-section">
-      <h1 class="page-title">Mode Latihan &amp; Rekaman</h1>
-      <p class="page-subtitle">Baca naskah di bawah ini sambil merekam suara Anda, lalu kirim ke AI untuk dinilai.</p>
+    <section id="page-latihan" class="page">
+      <h1>Mode Latihan Berbicara</h1>
+      <p class="subtitle">Baca naskah di bawah ini sambil merekam suara Anda untuk dievaluasi oleh pelatih AI.</p>
 
       <div class="card">
         <div class="grid-2">
           <div class="form-group">
             <label>Nama Siswa / Pembicara</label>
-            <input type="text" id="latihan-nama" placeholder="Contoh: Budi Santoso - XI IPA 2">
+            <input type="text" id="latihan-nama" placeholder="Masukkan nama lengkap Anda...">
           </div>
           <div class="form-group">
-            <label>Pilih Naskah Latihan</label>
-            <select id="latihan-pilih-naskah" onchange="tampilkanNaskahLatihan()">
-              <option value="">-- Pilih Naskah --</option>
+            <label>Pilih Naskah Acuan</label>
+            <select id="select-naskah" onchange="loadSelectedScript()">
+              <option value="">-- Gunakan Naskah Aktif / Bebas --</option>
             </select>
           </div>
         </div>
 
         <label>Teks Naskah (Teleprompter)</label>
-        <div class="script-viewer" id="viewer-naskah">Silakan pilih naskah terlebih dahulu pada menu di atas...</div>
-
-        <div id="mic-warning" class="alert-warning hidden"></div>
+        <div class="script-reader" id="teleprompter-text">Belum ada naskah dipilih. Silakan buat naskah terlebih dahulu atau langsung mulai berbicara bebas.</div>
 
         <div class="recorder-box">
-          <div class="timer-display" id="timer">00:00</div>
-          <div class="rec-status" id="rec-status">Siap merekam suara</div>
+          <div class="timer" id="rec-timer">00:00</div>
+          <div class="meter-wrap" id="meter-wrap">
+            <div class="meter-bar" id="meter-bar"></div>
+          </div>
+          <div class="rec-status" id="rec-status">Tekan tombol di bawah untuk mulai merekam suara</div>
 
-          <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
-            <button class="btn-primary" id="btn-rec-start" onclick="mulaiRekam()">🎙️ Mulai Bicara</button>
-            <button class="btn-danger-sm" id="btn-rec-stop" onclick="stopRekam()" style="padding:11px 20px; font-size:14px;" disabled>⏹️ Selesai &amp; Stop</button>
+          <div class="rec-controls">
+            <button class="btn btn-primary" id="btn-start-rec" onclick="startRecording()">🎙️ Mulai Bicara</button>
+            <button class="btn btn-danger" id="btn-stop-rec" onclick="stopRecording()" disabled>⏹️ Selesai & Stop</button>
           </div>
 
-          <div id="audio-preview-area" class="hidden" style="margin-top:20px;">
-            <audio id="audio-player" controls style="width:100%; max-width:420px; margin-bottom:14px;"></audio><br>
-            <button class="btn-success" id="btn-kirim-evaluasi" onclick="kirimEvaluasi()">🚀 Kirim untuk Evaluasi AI</button>
+          <audio id="audio-playback" controls style="display: none;"></audio>
+
+          <div style="margin-top: 18px;">
+            <button class="btn btn-success" id="btn-evaluate" onclick="submitEvaluation()" style="display: none;">🚀 Kirim untuk Evaluasi AI</button>
           </div>
         </div>
+      </div>
+
+      <div class="card" id="hasil-evaluasi-card" style="display: none; border-left: 5px solid var(--success);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h3>🏆 Hasil Evaluasi Pelatih AI</h3>
+          <span class="badge" style="font-size: 1rem; padding: 6px 14px;" id="eval-skor">Skor: 0/100</span>
+        </div>
+        <p id="eval-catatan" style="line-height: 1.7; white-space: pre-wrap;"></p>
       </div>
     </section>
 
     <!-- 4. EVALUASI & RIWAYAT -->
-    <section id="page-evaluasi" class="page-section">
-      <h1 class="page-title">Evaluasi &amp; Riwayat Latihan</h1>
-      <p class="page-subtitle">Hasil analisis AI dan rekaman riwayat performa latihan berbicara.</p>
-
-      <div class="card hidden" id="hasil-evaluasi-terbaru">
-        <div class="card-title">🏆 Hasil Evaluasi Terbaru</div>
-        <div style="display:flex; gap:24px; align-items:center; flex-wrap:wrap;">
-          <div class="score-circle" id="eval-skor-besar">0</div>
-          <div style="flex:1; min-width:250px;">
-            <div style="font-weight:700; font-size:16px; margin-bottom:6px;" id="eval-judul-hasil">-</div>
-            <p style="margin:0; font-size:14px; line-height:1.6; color:var(--text-dark); white-space:pre-wrap;" id="eval-catatan-hasil">-</p>
-          </div>
-        </div>
-      </div>
+    <section id="page-riwayat" class="page">
+      <h1>Riwayat Evaluasi Latihan</h1>
+      <p class="subtitle">Daftar rekaman latihan yang telah dinilai oleh AI dan tersimpan di database.</p>
 
       <div class="card">
-        <div class="card-title">📋 Riwayat Sesi Latihan</div>
-        <div style="overflow-x:auto;">
-          <table>
-            <thead>
-              <tr>
-                <th>Waktu</th>
-                <th>Nama Pembicara</th>
-                <th>Judul Naskah</th>
-                <th>Durasi</th>
-                <th>Skor</th>
-                <th>Catatan AI</th>
-              </tr>
-            </thead>
-            <tbody id="tabel-riwayat">
-              <tr><td colspan="6">Memuat riwayat...</td></tr>
-            </tbody>
-          </table>
-        </div>
+        <div id="list-riwayat">Memuat riwayat...</div>
       </div>
     </section>
 
   </main>
 
   <script>
+    // =========================================================================
+    // URL WEB APP GOOGLE APPS SCRIPT AKTIF
+    // =========================================================================
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxcTxlPF7-zkbw4nfBhnLiw_uPa2JxBjAHL_2ticMz7sm3rLyL67VsRd1GLtBWNFbc/exec";
 
-    let daftarNaskah = [];
-    let daftarRiwayat = [];
+    let savedScripts = [];
+    let savedHistory = [];
     let mediaRecorder = null;
     let audioChunks = [];
-    let audioBase64 = "";
-    let audioMimeType = "audio/webm";
+    let recordedBlob = null;
+    let recordedMimeType = "audio/webm";
     let timerInterval = null;
-    let detikRekam = 0;
+    let secondsElapsed = 0;
+    let audioContext = null;
+    let analyser = null;
+    let micStream = null;
+    let meterAnimId = null;
 
-    async function callBackend(action, payload = {}) {
-      const response = await fetch(APPS_SCRIPT_URL, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ action: action, ...payload })
-      });
-      if (!response.ok) throw new Error("Gagal terhubung ke server (" + response.status + ")");
-      return await response.json();
-    }
-
-    function switchPage(pageId) {
-      document.querySelectorAll(".page-section").forEach(el => el.classList.remove("active"));
-      document.querySelectorAll(".nav-item").forEach(el => el.classList.remove("active"));
-      document.getElementById("page-" + pageId).classList.add("active");
-      document.getElementById("nav-" + pageId).classList.add("active");
+    // Navigasi Halaman
+    function showPage(pageId, btnEl) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page-' + pageId).classList.add('active');
+      if (btnEl) {
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        btnEl.classList.add('active');
+      }
     }
 
     function switchScriptMode(mode) {
-      document.getElementById("tab-ai").classList.toggle("active", mode === "ai");
-      document.getElementById("tab-manual").classList.toggle("active", mode === "manual");
-      document.getElementById("form-ai").classList.toggle("hidden", mode !== "ai");
+      document.getElementById('tab-ai').classList.toggle('active', mode === 'ai');
+      document.getElementById('tab-manual').classList.toggle('active', mode === 'manual');
+      document.getElementById('ai-generator-box').style.display = mode === 'ai' ? 'block' : 'none';
     }
 
-    async function muatSemuaData() {
+    // Komunikasi Backend Apps Script
+    async function callBackend(payload) {
+      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes("TEMPEL_URL")) {
+        throw new Error("URL Web App Apps Script belum diisi pada file index.html!");
+      }
+      const res = await fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload)
+      });
+      return await res.json();
+    }
+
+    // Muat Data Awal
+    async function loadInitialData() {
       try {
-        const res = await callBackend("getInitialData");
+        const res = await callBackend({ action: "getInitialData" });
         if (res.status === "success") {
-          daftarNaskah = res.naskah || [];
-          daftarRiwayat = res.riwayat || [];
-          renderNaskah();
-          renderRiwayat();
-          updateStatistik();
+          savedScripts = res.naskah || [];
+          savedHistory = res.riwayat || [];
+          renderDashboard();
         }
       } catch (err) {
-        document.getElementById("list-naskah").innerHTML = "<span style='color:red;'>Gagal memuat data: " + err.message + "</span>";
+        document.getElementById('list-naskah').innerHTML = `<p style="color:var(--danger)">Gagal memuat data: ${err.message}</p>`;
       }
     }
 
-    function updateStatistik() {
-      document.getElementById("stat-naskah").textContent = daftarNaskah.length;
-      document.getElementById("stat-latihan").textContent = daftarRiwayat.length;
-      if (daftarRiwayat.length > 0) {
-        const total = daftarRiwayat.reduce((acc, item) => acc + (Number(item.skor) || 0), 0);
-        document.getElementById("stat-skor").textContent = Math.round(total / daftarRiwayat.length);
+    function renderDashboard() {
+      document.getElementById('stat-naskah').textContent = savedScripts.length;
+      document.getElementById('stat-latihan').textContent = savedHistory.length;
+
+      if (savedHistory.length > 0) {
+        const avg = Math.round(savedHistory.reduce((a, b) => a + Number(b.skor || 0), 0) / savedHistory.length);
+        document.getElementById('stat-skor').textContent = avg + "/100";
+      } else {
+        document.getElementById('stat-skor').textContent = "-";
+      }
+
+      // Render Naskah
+      const listNaskahEl = document.getElementById('list-naskah');
+      const selectNaskahEl = document.getElementById('select-naskah');
+      selectNaskahEl.innerHTML = '<option value="">-- Gunakan Naskah Aktif / Bebas --</option>';
+
+      if (savedScripts.length === 0) {
+        listNaskahEl.innerHTML = '<p style="color:var(--muted)">Belum ada naskah tersimpan. Klik menu "Buat Naskah" untuk memulai.</p>';
+      } else {
+        listNaskahEl.innerHTML = savedScripts.map((s, idx) => `
+          <div class="list-item">
+            <div>
+              <strong>${escapeHtml(s.judul)}</strong>
+              <div style="font-size:0.82rem; color:var(--muted); margin-top:4px;">Dibuat: ${escapeHtml(s.waktu)}</div>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button class="btn btn-primary" style="padding:8px 12px; font-size:0.85rem;" onclick="practiceScript(${idx})">Latihan</button>
+              <button class="btn btn-outline" style="padding:8px 12px; font-size:0.85rem; color:var(--danger);" onclick="deleteScript('${s.id}')">Hapus</button>
+            </div>
+          </div>
+        `).join('');
+
+        savedScripts.forEach((s, idx) => {
+          const opt = document.createElement('option');
+          opt.value = idx;
+          opt.textContent = s.judul;
+          selectNaskahEl.appendChild(opt);
+        });
+      }
+
+      // Render Riwayat
+      const listRiwayatEl = document.getElementById('list-riwayat');
+      if (savedHistory.length === 0) {
+        listRiwayatEl.innerHTML = '<p style="color:var(--muted)">Belum ada riwayat evaluasi latihan.</p>';
+      } else {
+        listRiwayatEl.innerHTML = savedHistory.map(r => `
+          <div class="list-item" style="flex-direction:column; align-items:flex-start;">
+            <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
+              <strong>${escapeHtml(r.nama)} — ${escapeHtml(r.judul)}</strong>
+              <span class="badge">Skor: ${r.skor}/100</span>
+            </div>
+            <div style="font-size:0.82rem; color:var(--muted);">${escapeHtml(r.waktu)} • Durasi: ${escapeHtml(r.durasi)}</div>
+            <p style="font-size:0.92rem; line-height:1.6; margin-top:6px; white-space:pre-wrap;">${escapeHtml(r.catatan)}</p>
+          </div>
+        `).join('');
       }
     }
 
-    async function generateNaskahAI() {
-      const topik = document.getElementById("ai-topik").value.trim();
-      const audiens = document.getElementById("ai-audiens").value.trim() || "Umum";
-      const gaya = document.getElementById("ai-gaya").value;
-      const durasi = document.getElementById("ai-durasi").value || "3";
+    // Generate Naskah AI
+    async function generateScriptAI() {
+      const topik = document.getElementById('ai-topik').value.trim();
+      if (!topik) return alert("Masukkan topik utama pidato terlebih dahulu!");
 
-      if (!topik) return alert("Silakan isi topik pidato terlebih dahulu.");
-
-      const btn = document.getElementById("btn-generate");
+      const btn = document.getElementById('btn-generate');
       btn.disabled = true;
       btn.textContent = "⏳ Sedang menyusun naskah...";
 
       try {
-        const res = await callBackend("generateScript", { topik, audiens, gaya, durasi });
+        const res = await callBackend({
+          action: "generateScript",
+          topik: topik,
+          audiens: document.getElementById('ai-audiens').value,
+          gaya: document.getElementById('ai-gaya').value,
+          durasi: document.getElementById('ai-durasi').value
+        });
+
         if (res.status === "success") {
-          document.getElementById("naskah-judul").value = res.judul || topik;
-          document.getElementById("naskah-isi").value = res.naskah;
+          document.getElementById('naskah-judul').value = res.judul;
+          document.getElementById('naskah-isi').value = res.naskah;
         } else {
           alert("Gagal membuat naskah: " + res.message);
         }
       } catch (err) {
-        alert("Terjadi kesalahan: " + err.message);
+        alert("Terjadi kesalahan jaringan: " + err.message);
       } finally {
         btn.disabled = false;
         btn.textContent = "✨ Buat Naskah dengan AI";
       }
     }
 
-    async function simpanNaskah() {
-      const judul = document.getElementById("naskah-judul").value.trim();
-      const isi = document.getElementById("naskah-isi").value.trim();
-      if (!judul || !isi) return alert("Judul dan isi naskah tidak boleh kosong.");
+    // Simpan Naskah
+    async function saveScript() {
+      const judul = document.getElementById('naskah-judul').value.trim();
+      const isi = document.getElementById('naskah-isi').value.trim();
+      if (!judul || !isi) return alert("Judul dan isi naskah tidak boleh kosong!");
 
-      const btn = document.getElementById("btn-simpan-naskah");
+      const btn = document.getElementById('btn-save-script');
       btn.disabled = true;
       btn.textContent = "⏳ Menyimpan...";
 
       try {
-        const res = await callBackend("saveScript", { judul, isi });
+        const res = await callBackend({ action: "saveScript", judul, isi });
         if (res.status === "success") {
           alert("Naskah berhasil disimpan!");
-          document.getElementById("naskah-judul").value = "";
-          document.getElementById("naskah-isi").value = "";
-          await muatSemuaData();
+          await loadInitialData();
         } else {
           alert("Gagal menyimpan: " + res.message);
         }
@@ -509,202 +470,198 @@
         alert("Error: " + err.message);
       } finally {
         btn.disabled = false;
-        btn.textContent = "💾 Simpan Naskah ke Daftar";
+        btn.textContent = "💾 Simpan Naskah";
       }
     }
 
-    function renderNaskah() {
-      const container = document.getElementById("list-naskah");
-      const dropdown = document.getElementById("latihan-pilih-naskah");
-      dropdown.innerHTML = '<option value="">-- Pilih Naskah --</option>';
-
-      if (daftarNaskah.length === 0) {
-        container.innerHTML = "<p style='color:var(--text-muted); font-size:14px;'>Belum ada naskah tersimpan.</p>";
-        return;
-      }
-
-      container.innerHTML = "";
-      daftarNaskah.forEach((item, idx) => {
-        const opt = document.createElement("option");
-        opt.value = idx;
-        opt.textContent = item.judul;
-        dropdown.appendChild(opt);
-
-        const div = document.createElement("div");
-        div.className = "saved-item";
-        div.innerHTML = `
-          <div>
-            <div class="saved-item-title">${item.judul}</div>
-            <div class="saved-item-meta">${item.isi.substring(0, 95)}...</div>
-          </div>
-          <div style="display:flex; gap:8px;">
-            <button class="btn-primary" style="padding:7px 12px; font-size:12px;" onclick="pilihUntukLatihan(${idx})">Latih</button>
-            <button class="btn-danger-sm" onclick="hapusNaskah('${item.id}')">Hapus</button>
-          </div>
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    function pilihUntukLatihan(idx) {
-      switchPage("latihan");
-      document.getElementById("latihan-pilih-naskah").value = idx;
-      tampilkanNaskahLatihan();
-    }
-
-    function tampilkanNaskahLatihan() {
-      const idx = document.getElementById("latihan-pilih-naskah").value;
-      const viewer = document.getElementById("viewer-naskah");
-      if (idx === "") {
-        viewer.textContent = "Silakan pilih naskah terlebih dahulu pada menu di atas...";
-        return;
-      }
-      viewer.textContent = daftarNaskah[idx].isi;
-    }
-
-    async function hapusNaskah(id) {
+    async function deleteScript(id) {
       if (!confirm("Hapus naskah ini?")) return;
       try {
-        await callBackend("deleteScript", { id });
-        await muatSemuaData();
+        const res = await callBackend({ action: "deleteScript", id });
+        if (res.status === "success") await loadInitialData();
       } catch (err) {
         alert("Gagal menghapus: " + err.message);
       }
     }
 
-    async function mulaiRekam() {
-      const warn = document.getElementById("mic-warning");
-      warn.classList.add("hidden");
+    function practiceScript(idx) {
+      const s = savedScripts[idx];
+      if (!s) return;
+      document.getElementById('select-naskah').value = idx;
+      document.getElementById('teleprompter-text').textContent = s.isi;
+      showPage('latihan', document.querySelectorAll('.nav-btn')[2]);
+    }
 
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        warn.textContent = "Browser ini tidak mendukung perekaman audio. Gunakan Chrome atau Safari versi terbaru.";
-        warn.classList.remove("hidden");
-        return;
-      }
+    function useCurrentScriptForPractice() {
+      const isi = document.getElementById('naskah-isi').value.trim();
+      if (!isi) return alert("Isi naskah masih kosong!");
+      document.getElementById('teleprompter-text').textContent = isi;
+      showPage('latihan', document.querySelectorAll('.nav-btn')[2]);
+    }
 
+    function loadSelectedScript() {
+      const val = document.getElementById('select-naskah').value;
+      if (val === "") return;
+      const s = savedScripts[Number(val)];
+      if (s) document.getElementById('teleprompter-text').textContent = s.isi;
+    }
+
+    // Perekaman Suara dengan Kompresi 32 kbps & Indikator Volume
+    async function startRecording() {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
         audioChunks = [];
-        mediaRecorder = new MediaRecorder(stream);
-        audioMimeType = mediaRecorder.mimeType || "audio/webm";
+        recordedBlob = null;
+
+        // Indikator level suara real-time
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const source = audioContext.createMediaStreamSource(micStream);
+        analyser = audioContext.createAnalyser();
+        analyser.fftSize = 256;
+        source.connect(analyser);
+
+        const meterWrap = document.getElementById('meter-wrap');
+        const meterBar = document.getElementById('meter-bar');
+        meterWrap.style.display = 'block';
+        const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+        function updateMeter() {
+          analyser.getByteFrequencyData(dataArray);
+          let sum = 0;
+          for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
+          const avg = sum / dataArray.length;
+          const pct = Math.min(100, Math.round((avg / 90) * 100));
+          meterBar.style.width = pct + "%";
+          meterAnimId = requestAnimationFrame(updateMeter);
+        }
+        updateMeter();
+
+        // Kompresi bitrate 32 kbps agar file ringan dan cepat diunggah dari HP
+        const options = { audioBitsPerSecond: 32000 };
+        if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
+          options.mimeType = 'audio/webm;codecs=opus';
+        } else if (MediaRecorder.isTypeSupported('audio/mp4')) {
+          options.mimeType = 'audio/mp4';
+        }
+
+        mediaRecorder = new MediaRecorder(micStream, options);
+        recordedMimeType = mediaRecorder.mimeType || "audio/webm";
 
         mediaRecorder.ondataavailable = e => {
-          if (e.data.size > 0) audioChunks.push(e.data);
+          if (e.data && e.data.size > 0) audioChunks.push(e.data);
         };
 
         mediaRecorder.onstop = () => {
-          const blob = new Blob(audioChunks, { type: audioMimeType });
-          const url = URL.createObjectURL(blob);
-          const player = document.getElementById("audio-player");
-          player.src = url;
-          document.getElementById("audio-preview-area").classList.remove("hidden");
-
-          const reader = new FileReader();
-          reader.onloadend = () => {
-            audioBase64 = reader.result.split(",")[1];
-          };
-          reader.readAsDataURL(blob);
-          stream.getTracks().forEach(t => t.stop());
+          recordedBlob = new Blob(audioChunks, { type: recordedMimeType });
+          const audioUrl = URL.createObjectURL(recordedBlob);
+          const audioEl = document.getElementById('audio-playback');
+          audioEl.src = audioUrl;
+          audioEl.style.display = 'block';
+          document.getElementById('btn-evaluate').style.display = 'inline-flex';
+          document.getElementById('rec-status').textContent = "✅ Rekaman selesai! Putar ulang atau kirim untuk evaluasi.";
         };
 
         mediaRecorder.start();
-        detikRekam = 0;
-        updateTimerText();
+
+        secondsElapsed = 0;
+        document.getElementById('rec-timer').textContent = "00:00";
+        document.getElementById('rec-status').textContent = "🔴 Sedang merekam... Silakan berbicara dengan jelas";
+        document.getElementById('btn-start-rec').disabled = true;
+        document.getElementById('btn-stop-rec').disabled = false;
+        document.getElementById('audio-playback').style.display = 'none';
+        document.getElementById('btn-evaluate').style.display = 'none';
+        document.getElementById('hasil-evaluasi-card').style.display = 'none';
+
         timerInterval = setInterval(() => {
-          detikRekam++;
-          updateTimerText();
+          secondsElapsed++;
+          const m = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
+          const s = String(secondsElapsed % 60).padStart(2, '0');
+          document.getElementById('rec-timer').textContent = `${m}:${s}`;
         }, 1000);
 
-        document.getElementById("rec-status").textContent = "🔴 Sedang merekam suara...";
-        document.getElementById("rec-status").className = "rec-status recording";
-        document.getElementById("btn-rec-start").disabled = true;
-        document.getElementById("btn-rec-stop").disabled = false;
-        document.getElementById("audio-preview-area").classList.add("hidden");
       } catch (err) {
-        warn.textContent = "Izin mikrofon ditolak atau tidak tersedia (" + err.message + "). Pastikan izin mikrofon diaktifkan pada pengaturan browser.";
-        warn.classList.remove("hidden");
+        alert("Tidak dapat mengakses mikrofon. Pastikan izin mikrofon browser sudah diizinkan: " + err.message);
       }
     }
 
-    function stopRekam() {
+    function stopRecording() {
       if (mediaRecorder && mediaRecorder.state !== "inactive") {
         mediaRecorder.stop();
       }
+      if (micStream) {
+        micStream.getTracks().forEach(track => track.stop());
+      }
+      if (meterAnimId) cancelAnimationFrame(meterAnimId);
+      if (audioContext) audioContext.close();
+      document.getElementById('meter-wrap').style.display = 'none';
+
       clearInterval(timerInterval);
-      document.getElementById("rec-status").textContent = "✅ Rekaman selesai! Putar ulang atau kirim untuk evaluasi.";
-      document.getElementById("rec-status").className = "rec-status ready";
-      document.getElementById("btn-rec-start").disabled = false;
-      document.getElementById("btn-rec-stop").disabled = true;
+      document.getElementById('btn-start-rec').disabled = false;
+      document.getElementById('btn-stop-rec').disabled = true;
     }
 
-    function updateTimerText() {
-      const m = String(Math.floor(detikRekam / 60)).padStart(2, "0");
-      const s = String(detikRekam % 60).padStart(2, "0");
-      document.getElementById("timer").textContent = `${m}:${s}`;
-    }
+    // Kirim Rekaman untuk Evaluasi AI
+    async function submitEvaluation() {
+      const nama = document.getElementById('latihan-nama').value.trim();
+      if (!nama) return alert("Masukkan nama Anda terlebih dahulu sebelum mengirim evaluasi!");
+      if (!recordedBlob) return alert("Belum ada rekaman suara!");
 
-    async function kirimEvaluasi() {
-      const nama = document.getElementById("latihan-nama").value.trim() || "Peserta Latihan";
-      const idx = document.getElementById("latihan-pilih-naskah").value;
-      const judul = idx !== "" ? daftarNaskah[idx].judul : "Latihan Bebas";
-      const naskahAsli = idx !== "" ? daftarNaskah[idx].isi : "";
-
-      if (!audioBase64) return alert("Rekaman audio belum siap. Silakan rekam ulang.");
-
-      const btn = document.getElementById("btn-kirim-evaluasi");
+      const btn = document.getElementById('btn-evaluate');
       btn.disabled = true;
       btn.textContent = "⏳ AI sedang menganalisis suara...";
 
       try {
-        const res = await callBackend("evaluateSpeech", {
-          nama,
-          judul,
-          naskah: naskahAsli,
-          durasi: document.getElementById("timer").textContent,
-          audioBase64,
-          mimeType: audioMimeType
+        const base64Audio = await blobToBase64(recordedBlob);
+        const selIdx = document.getElementById('select-naskah').value;
+        const judul = selIdx !== "" && savedScripts[Number(selIdx)]
+          ? savedScripts[Number(selIdx)].judul
+          : (document.getElementById('naskah-judul').value.trim() || "Latihan Pidato");
+        const naskah = document.getElementById('teleprompter-text').textContent;
+        const durasi = document.getElementById('rec-timer').textContent;
+
+        const res = await callBackend({
+          action: "evaluateSpeech",
+          nama: nama,
+          judul: judul,
+          durasi: durasi,
+          naskah: naskah,
+          mimeType: recordedMimeType,
+          audioBase64: base64Audio
         });
 
         if (res.status === "success") {
-          document.getElementById("eval-skor-besar").textContent = res.skor;
-          document.getElementById("eval-judul-hasil").textContent = `${nama} — ${judul}`;
-          document.getElementById("eval-catatan-hasil").textContent = res.catatan;
-          document.getElementById("hasil-evaluasi-terbaru").classList.remove("hidden");
-          switchPage("evaluasi");
-          await muatSemuaData();
+          document.getElementById('eval-skor').textContent = `Skor: ${res.skor}/100`;
+          document.getElementById('eval-catatan').textContent = res.catatan;
+          document.getElementById('hasil-evaluasi-card').style.display = 'block';
+          document.getElementById('hasil-evaluasi-card').scrollIntoView({ behavior: 'smooth' });
+          await loadInitialData();
         } else {
-          alert("Gagal mengevaluasi: " + res.message);
+          alert("Gagal mengevaluasi suara: " + res.message);
         }
       } catch (err) {
-        alert("Terjadi kesalahan saat mengirim evaluasi: " + err.message);
+        alert("Terjadi kesalahan saat mengirim audio: " + err.message);
       } finally {
         btn.disabled = false;
         btn.textContent = "🚀 Kirim untuk Evaluasi AI";
       }
     }
 
-    function renderRiwayat() {
-      const tbody = document.getElementById("tabel-riwayat");
-      if (daftarRiwayat.length === 0) {
-        tbody.innerHTML = "<tr><td colspan='6'>Belum ada riwayat latihan.</td></tr>";
-        return;
-      }
-      tbody.innerHTML = "";
-      daftarRiwayat.forEach(item => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${item.waktu || "-"}</td>
-          <td><strong>${item.nama || "-"}</strong></td>
-          <td>${item.judul || "-"}</td>
-          <td>${item.durasi || "-"}</td>
-          <td><strong>${item.skor || 0}</strong></td>
-          <td>${item.catatan || "-"}</td>
-        `;
-        tbody.appendChild(tr);
+    function blobToBase64(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
       });
     }
 
-    window.addEventListener("DOMContentLoaded", muatSemuaData);
+    function escapeHtml(str) {
+      return String(str || "").replace(/[&<>"']/g, m => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      })[m]);
+    }
+
+    window.addEventListener('DOMContentLoaded', loadInitialData);
   </script>
 </body>
 </html>
